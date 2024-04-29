@@ -1,0 +1,241 @@
+<!-- views/borrowers.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Borrowers Management</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+    <style>
+      /* Paste the CSS styles here */
+      body {
+        font-family: "Roboto", sans-serif;
+        text-decoration: none;
+        text-align: justify;
+      }
+
+      #borrows {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      #borrows td,
+      #borrows th {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      #borrows tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      #borrows tr:hover {
+        background-color: #ddd;
+      }
+
+      #borrows th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: lightblue;
+        color: black;
+      }
+
+      /* Add style for the "Add Borrows" button */
+      .add-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: black;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .add-button:hover {
+        background-color: #333;
+      }
+
+      /* Add style for form inputs and buttons */
+      .form-container {
+        max-width: 400px;
+        margin: 20px auto;
+      }
+
+      .form-container input[type="text"],
+      .form-container input[type="email"],
+      .form-container input[type="tel"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .form-container button[type="submit"] {
+        background-color: black;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .form-container button[type="submit"]:hover {
+        background-color: #333;
+      }
+
+      header a {
+        text-decoration: none;
+        margin-right: 20px; /* Add spacing between links */
+      }
+
+      /* CSS for clicked and hover effects */
+      header a:visited,
+      header a:hover,
+      header a:focus {
+        font-weight: bold;
+        color: black; /* Change the color on hover */
+      }
+
+      header {
+        background-color: lightblue;
+        display: flex;
+        /* justify-content: space-between; */
+        padding: 20px 20px;
+      }
+
+      header a {
+        color: black;
+        text-decoration: none;
+        margin-right: 20px;
+      }
+
+      header a.active {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="/about">HOME</a>
+      <a href="/students">STUDENTS</a>
+      <a href="/books">BOOKS</a>
+      <a href="/borrows" class="active">BORROWERS</a>
+    </header>
+
+    <% if (view === 'index') { %>
+    <h1>Borrows</h1>
+    <a href="/borrows/add" class="add-button">Add Borrowers</a>
+    <br /><br />
+    <table id="borrows">
+      <thead>
+        <tr>
+          <!-- <th>S. no</th> -->
+          <!-- Add a column for serial numbers -->
+          <th>Borrows Id</th>
+          <th>Borrow Date</th>
+          <th>Return Date</th>
+          <th>Student Id</th>
+          <th>Book Id</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- <% let serialNumber = 1; %>
+         Initialize a counter variable -->
+        <!-- <% borrows.forEach(borrows => { %>
+        <tr> --> 
+          <!-- <td><%= serialNumber %></td> -->
+          <!-- Display serial number -->
+          <td><%= borrows.borrow_id %></td>
+          <td><%= borrows.borrow_date %></td>
+          <td><%= borrows.returned_date %></td>
+          <td><%= borrows.student_id %></td>
+          <td><%= borrows.book_id %></td>
+          <td>
+            <a href="/borrows/edit/<%= borrows.borrow_id %>">Edit</a>
+            <a href="/borrows/delete/<%= borrows.borrow_id %>">Delete</a>
+          </td>
+         </tr>
+        <!-- <% serialNumber++; %>
+         Increment the serial number  
+        <% }); %> -->
+      </tbody>
+    </table>
+    <br />
+    <!-- <a href="/add" class="add-button">Add Borrows</a> -->
+    <% } else if (view === 'add') { %>
+    <div class="form-container">
+      <h1>Create</h1>
+      <form action="/borrows/add" method="POST">
+        <label type="text" name="borrow_id" placeholder="Borrows Id" required /><br />
+        <input type="text" name="borrow_date" placeholder="Borrow Date" required /><br />
+        <input type="text" name="returned_date" placeholder="Return Date" required /><br />
+       <!-- <input type="text" name="student_id" placeholder="Student Id" required /><br /> -->
+       <label for="student">Student Id:</label>
+        <select name="student_id" id="student_id">
+          <% students.forEach(student => { %>
+            <option value="<%= student %>"><%= student %></option>
+          <% }); %>
+        </select>
+        <br>
+        <br/>
+        <!--  <input type="tel" name="book_id" placeholder="Book Id" required /><br /> -->
+        <label for="book">Book Id:</label>
+        <select name="book_id" id="book_id">
+          <% books.forEach(book => { %>
+            <option value="<%= book %>"><%= book %></option>
+          <% }); %>
+        </select>
+        <br>
+        <br/>
+        <button type="submit">Add Borrower</button>
+      </form>
+    </div>
+    <% } else if (view === 'edit') { %>
+    <div class="form-container">
+      <h1>Update</h1>
+      <form action="/borrows/edit/<%= borrows.borrow_id %>" method="POST">
+        <label for="borrow_id">Borrow Id:</label>
+        <label name="borrow_id" value="<%= borrows.borrow_id %>" readonly /><br />
+        <br/>
+        <input
+          type="text"
+          name="borrow_date"
+          value="<%= borrows.borrow_date %>"
+          required
+        /><br />
+        <input
+          type="text"
+          name="returned_date"
+          value="<%= borrows.returned_date %>"
+          required
+        /><br />
+        <label for="student">Student Id:</label>
+        <select name="student_id" id="student_id">
+          <% students.forEach(student => { %>
+            <option value="<%= student %>" <% if (student === borrows.student_id) { %>selected<% } %>><%= student %></option>
+
+          <% }); %>
+        </select>
+        <br>
+        <br/>
+        <!--  <input type="tel" name="book_id" placeholder="Book Id" required /><br /> -->
+        <label for="book">Book Id:</label>
+        <select name="book_id" id="book_id">
+          <% books.forEach(book => { %>
+            <option value="<%= book %>" <% if (book === borrows.book_id) { %>selected<% } %>><%= book %></option>
+          <% }); %>
+        </select>
+        <br>
+        <br/>
+        <button type="submit">Update Borrows</button>
+      </form>
+    </div>
+    <% } %>
+  </body>
+</html>
